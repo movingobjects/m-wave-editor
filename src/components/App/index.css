@@ -15,10 +15,15 @@
 }
 
 .controls-container {
-  width: 300px;
-  padding: 20px;
+  width: 250px;
+  padding: 25px;
   overflow-y: auto;
   -webkit-app-region: no-drag;
+  border-right: 1px solid #ddd;
+}
+
+.app.dark .controls-container {
+  border-right: 1px solid #222;
 }
 
 .wave-container {

@@ -1,16 +1,13 @@
 {
-  "name": "m-wave-tool",
+  "name": "m-wave-editor",
   "version": "1.0.0",
-  "description": "Electron app with customizable sine wave visualization",
+  "description": "Sine wave editor",
   "main": "dist-electron/main.js",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
-    "preview": "vite preview",
-    "electron:dev": "vite",
-    "electron:dev:debug": "OPEN_DEVTOOLS=true vite",
-    "electron:build": "vite build && electron-builder"
+    "debug": "OPEN_DEVTOOLS=true vite"
   },
   "keywords": [
     "electron",

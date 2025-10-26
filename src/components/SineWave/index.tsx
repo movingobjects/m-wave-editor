@@ -59,7 +59,7 @@ const SineWave = ({ config, isDarkMode }: SineWaveProps) => {
       ctx.clearRect(0, 0, width, height)
 
       // Draw center line
-      ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+      ctx.strokeStyle = isDark ? '#222' : '#ddd'
       ctx.lineWidth = 1
       ctx.beginPath()
       ctx.moveTo(0, height / 2)

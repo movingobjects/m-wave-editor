@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import SineWave from './components/SineWave'
-import Controls from './components/Controls'
-import './App.css'
+import SineWave from '../SineWave'
+import Controls from '../Controls'
+import './index.css'
 
 export interface WaveConfig {
   amplitude: number
@@ -14,12 +14,12 @@ export interface WaveConfig {
 
 function App() {
   const [waveConfig, setWaveConfig] = useState<WaveConfig>({
-    amplitude: 100,
+    amplitude: 200,
     wavelength: 200,
-    cycles: 2,
-    speed: 0.05,
-    lineWidth: 2,
-    squareness: 0,
+    cycles: 2.5,
+    speed: 0.1,
+    lineWidth: 25,
+    squareness: 1,
   })
 
   const [isDarkMode, setIsDarkMode] = useState(true)
