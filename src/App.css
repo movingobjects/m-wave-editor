@@ -1,0 +1,35 @@
+.app {
+  display: flex;
+  height: 100vh;
+  -webkit-app-region: drag;
+}
+
+.app.dark {
+  background: #000;
+  color: #fff;
+}
+
+.app.light {
+  background: #fff;
+  color: #000;
+}
+
+.controls-container {
+  width: 300px;
+  padding: 20px;
+  overflow-y: auto;
+  -webkit-app-region: no-drag;
+}
+
+.wave-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sine-wave-canvas {
+  width: 100%;
+  height: 100%;
+}
+
