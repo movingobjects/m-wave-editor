@@ -1,4 +1,4 @@
-import { WaveConfig } from '../App'
+import { WaveConfig, WaveType } from '../App'
 import './index.css'
 
 interface ControlsProps {
@@ -6,12 +6,28 @@ interface ControlsProps {
   updateConfig: (key: keyof WaveConfig, value: number | string) => void
   isDarkMode: boolean
   setIsDarkMode: (value: boolean) => void
+  waveType: WaveType
+  setWaveType: (type: WaveType) => void
 }
 
-const Controls = ({ config, updateConfig, isDarkMode, setIsDarkMode }: ControlsProps) => {
+const Controls = ({ config, updateConfig, isDarkMode, setIsDarkMode, waveType, setWaveType }: ControlsProps) => {
   return (
     <div className="controls">
       <h2>M wave editor</h2>
+
+      <div className="control-group">
+        <label htmlFor="waveType">
+          Wave Type
+        </label>
+        <select
+          id="waveType"
+          value={waveType}
+          onChange={(e) => setWaveType(e.target.value as WaveType)}
+        >
+          <option value="sine">Sine</option>
+          <option value="parametric">Parametric</option>
+        </select>
+      </div>
 
       <div className="control-group">
         <label htmlFor="amplitude">
@@ -61,21 +77,23 @@ const Controls = ({ config, updateConfig, isDarkMode, setIsDarkMode }: ControlsP
         />
       </div>
 
-      <div className="control-group">
-        <label htmlFor="squareness">
-          Squareness
-          <span className="value">{config.squareness.toFixed(2)}</span>
-        </label>
-        <input
-          id="squareness"
-          type="range"
-          min="0"
-          max="2"
-          step="0.1"
-          value={config.squareness}
-          onChange={(e) => updateConfig('squareness', Number(e.target.value))}
-        />
-      </div>
+      {waveType === 'sine' && (
+        <div className="control-group">
+          <label htmlFor="squareness">
+            Squareness
+            <span className="value">{config.squareness.toFixed(2)}</span>
+          </label>
+          <input
+            id="squareness"
+            type="range"
+            min="0"
+            max="2"
+            step="0.1"
+            value={config.squareness}
+            onChange={(e) => updateConfig('squareness', Number(e.target.value))}
+          />
+        </div>
+      )}
 
       <div className="control-group">
         <label htmlFor="speed">

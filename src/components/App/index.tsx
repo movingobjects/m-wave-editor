@@ -3,6 +3,8 @@ import SineWave from '../SineWave'
 import Controls from '../Controls'
 import './index.css'
 
+export type WaveType = 'sine' | 'parametric'
+
 export interface WaveConfig {
   amplitude: number
   wavelength: number
@@ -23,6 +25,7 @@ function App() {
   })
 
   const [isDarkMode, setIsDarkMode] = useState(true)
+  const [waveType, setWaveType] = useState<WaveType>('sine')
 
   const updateConfig = (key: keyof WaveConfig, value: number | string) => {
     setWaveConfig((prev) => ({
@@ -39,11 +42,13 @@ function App() {
           updateConfig={updateConfig}
           isDarkMode={isDarkMode}
           setIsDarkMode={setIsDarkMode}
+          waveType={waveType}
+          setWaveType={setWaveType}
         />
       </div>
 
       <div className="wave-container">
-        <SineWave config={waveConfig} isDarkMode={isDarkMode} />
+        <SineWave config={waveConfig} isDarkMode={isDarkMode} waveType={waveType} />
       </div>
     </div>
   )
