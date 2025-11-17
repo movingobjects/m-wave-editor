@@ -1,54 +1,36 @@
 import { useState } from 'react'
-import SineWave from '../SineWave'
 import Controls from '../Controls'
 import './index.css'
-
-export type WaveType = 'sine' | 'parametric'
-
-export interface WaveConfig {
-  amplitude: number
-  wavelength: number
-  cycles: number
-  speed: number
-  lineWidth: number
-  squareness: number
-}
+import Wave from '../Wave'
 
 function App() {
-  const [waveConfig, setWaveConfig] = useState<WaveConfig>({
-    amplitude: 200,
-    wavelength: 200,
-    cycles: 2.5,
-    speed: 0.1,
-    lineWidth: 25,
-    squareness: 1,
-  })
 
   const [isDarkMode, setIsDarkMode] = useState(true)
-  const [waveType, setWaveType] = useState<WaveType>('sine')
-
-  const updateConfig = (key: keyof WaveConfig, value: number | string) => {
-    setWaveConfig((prev) => ({
-      ...prev,
-      [key]: value,
-    }))
-  }
+  const [amplitude, setAmplitude] = useState(100)
+  const [wavelength, setWavelength] = useState(200)
+  const [phase, setPhase] = useState(0)
 
   return (
     <div className={`app ${isDarkMode ? 'dark' : 'light'}`}>
       <div className="controls-container">
         <Controls
-          config={waveConfig}
-          updateConfig={updateConfig}
           isDarkMode={isDarkMode}
           setIsDarkMode={setIsDarkMode}
-          waveType={waveType}
-          setWaveType={setWaveType}
+          amplitude={amplitude}
+          setAmplitude={setAmplitude}
+          wavelength={wavelength}
+          setWavelength={setWavelength}
+          phase={phase}
+          setPhase={setPhase}
         />
       </div>
 
       <div className="wave-container">
-        <SineWave config={waveConfig} isDarkMode={isDarkMode} waveType={waveType} />
+        <Wave
+          amplitude={amplitude}
+          wavelength={wavelength}
+          phase={phase}
+        />
       </div>
     </div>
   )
