@@ -6,9 +6,11 @@ import Wave from '../Wave'
 function App() {
 
   const [isDarkMode, setIsDarkMode] = useState(true)
-  const [amplitude, setAmplitude] = useState(100)
+  const [amplitude, setAmplitude] = useState(150)
   const [wavelength, setWavelength] = useState(200)
-  const [phase, setPhase] = useState(0)
+  const [speed, setSpeed] = useState(1.2)
+  const [cycles, setCycles] = useState(2.5)
+  const [thickness, setLineThickness] = useState(50)
 
   return (
     <div className={`app ${isDarkMode ? 'dark' : 'light'}`}>
@@ -20,8 +22,12 @@ function App() {
           setAmplitude={setAmplitude}
           wavelength={wavelength}
           setWavelength={setWavelength}
-          phase={phase}
-          setPhase={setPhase}
+          speed={speed}
+          setSpeed={setSpeed}
+          cycles={cycles}
+          setCycles={setCycles}
+          thickness={thickness}
+          setLineThickness={setLineThickness}
         />
       </div>
 
@@ -29,7 +35,10 @@ function App() {
         <Wave
           amplitude={amplitude}
           wavelength={wavelength}
-          phase={phase}
+          speed={speed}
+          cycles={cycles}
+          isDarkMode={isDarkMode}
+          thickness={thickness}
         />
       </div>
     </div>

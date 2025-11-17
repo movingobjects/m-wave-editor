@@ -8,8 +8,12 @@ interface ControlsProps {
   setAmplitude: (value: number) => void
   wavelength: number
   setWavelength: (value: number) => void
-  phase: number
-  setPhase: (value: number) => void
+  speed: number
+  setSpeed: (value: number) => void
+  cycles: number
+  setCycles: (value: number) => void
+  thickness: number
+  setLineThickness: (value: number) => void
 }
 
 const Controls = ({
@@ -19,8 +23,12 @@ const Controls = ({
   setAmplitude,
   wavelength,
   setWavelength,
-  phase,
-  setPhase
+  speed,
+  setSpeed,
+  cycles,
+  setCycles,
+  thickness,
+  setLineThickness
 }: ControlsProps) => {
   return (
     <div className="controls">
@@ -69,16 +77,47 @@ const Controls = ({
       </div>
 
       <div className="control-group">
-        <label htmlFor="phase">
-          Phase: {phase}
+        <label htmlFor="speed">
+          Speed: {speed}
         </label>
         <input
-          id="phase"
+          id="speed"
           type="range"
           min="0"
-          max="500"
-          value={phase}
-          onChange={(e) => setPhase(Number(e.target.value))}
+          max="10"
+          step="0.1"
+          value={speed}
+          onChange={(e) => setSpeed(Number(e.target.value))}
+        />
+      </div>
+
+      <div className="control-group">
+        <label htmlFor="cycles">
+          Cycles: {cycles}
+        </label>
+        <input
+          id="cycles"
+          type="range"
+          min="0"
+          max="10"
+          step="0.25"
+          value={cycles}
+          onChange={(e) => setCycles(Number(e.target.value))}
+        />
+      </div>
+
+      <div className="control-group">
+        <label htmlFor="thickness">
+          Thickness: {thickness}
+        </label>
+        <input
+          id="thickness"
+          type="range"
+          min="1"
+          max="100"
+          step="0.5"
+          value={thickness}
+          onChange={(e) => setLineThickness(Number(e.target.value))}
         />
       </div>
     </div>

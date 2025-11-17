@@ -4,11 +4,16 @@ import './index.css'
 interface WaveProps {
   amplitude: number
   wavelength: number
-  phase: number
+  speed: number
+  cycles: number
+  isDarkMode: boolean
+  thickness: number
 }
 
-const Wave = ({ amplitude, wavelength, phase }: WaveProps) => {
+const Wave = ({ amplitude, wavelength, speed, cycles, isDarkMode, thickness }: WaveProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const phaseRef = useRef(0)
+  const animationFrameRef = useRef<number>()
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -21,97 +26,150 @@ const Wave = ({ amplitude, wavelength, phase }: WaveProps) => {
     const resizeCanvas = () => {
       canvas.width = canvas.offsetWidth
       canvas.height = canvas.offsetHeight
-      drawWave()
     }
 
-    const drawWave = () => {
+    // Parametric functions: both X and Y are functions of parameter t
+    // t represents position along the wave curve (not spatial X)
+    const getWaveX = (t: number) => {
+      const radius = wavelength / 4
+
+      // Normalize t to position within one wavelength (0 to wavelength)
+      const normalizedT = ((t % wavelength) + wavelength) % wavelength
+
+      // One wavelength has 4 equal sections
+      const sectionLength = wavelength / 4
+
+      if (normalizedT < sectionLength) {
+        // Section 1: Vertical rise - X stays at 0
+        return 0
+      } else if (normalizedT < sectionLength * 2) {
+        // Section 2: Top circular arc - X goes from 0 to 2*radius
+        const localT = normalizedT - sectionLength
+        const progress = localT / sectionLength // 0 to 1
+        const angle = Math.PI * (1 - progress) // π to 0 (left to right)
+        return radius + radius * Math.cos(angle)
+      } else if (normalizedT < sectionLength * 3) {
+        // Section 3: Vertical fall - X stays at 2*radius
+        return 2 * radius
+      } else {
+        // Section 4: Bottom circular arc - X goes from 2*radius to 4*radius (wavelength)
+        const localT = normalizedT - sectionLength * 3
+        const progress = localT / sectionLength // 0 to 1
+        const angle = Math.PI * (1 - progress) // π to 0 (left to right)
+        return 3 * radius + radius * Math.cos(angle)
+      }
+    }
+
+    const getWaveY = (t: number) => {
+      const centerY = canvas.height / 2
+      const radius = wavelength / 4
+
+      // Normalize t to position within one wavelength
+      const normalizedT = ((t % wavelength) + wavelength) % wavelength
+
+      // One wavelength has 4 equal sections
+      const sectionLength = wavelength / 4
+
+      if (normalizedT < sectionLength) {
+        // Section 1: Vertical rise - Y goes from bottom to top
+        const progress = normalizedT / sectionLength // 0 to 1
+        return centerY + amplitude - (2 * amplitude * progress)
+      } else if (normalizedT < sectionLength * 2) {
+        // Section 2: Top circular arc - bulges upward
+        const localT = normalizedT - sectionLength
+        const progress = localT / sectionLength // 0 to 1
+        const angle = Math.PI * progress // 0 to π
+        return centerY - amplitude - radius * Math.sin(angle)
+      } else if (normalizedT < sectionLength * 3) {
+        // Section 3: Vertical fall - Y goes from top to bottom
+        const progress = (normalizedT - sectionLength * 2) / sectionLength // 0 to 1
+        return centerY - amplitude + (2 * amplitude * progress)
+      } else {
+        // Section 4: Bottom circular arc - bulges downward
+        const localT = normalizedT - sectionLength * 3
+        const progress = localT / sectionLength // 0 to 1
+        const angle = Math.PI * progress // 0 to π
+        return centerY + amplitude + radius * Math.sin(angle)
+      }
+    }
+
+    const drawWave = (phase: number) => {
       const width = canvas.width
       const height = canvas.height
-      const centerY = height / 2
-      const radius = wavelength / 4
 
       ctx.clearRect(0, 0, width, height)
 
-      // Draw the wave
+      if (cycles <= 0) return
+
+      // Calculate the total length to draw (in t parameter space)
+      const totalLength = cycles * wavelength
+
+      // Calculate where to center the wave on the canvas
+      const centerOffset = width / 2
+
+      // Draw the wave by sampling t parameter
       ctx.beginPath()
-      ctx.strokeStyle = '#3b82f6'
-      ctx.lineWidth = 3
+      ctx.strokeStyle = isDarkMode ? '#ffffff' : '#000000'
+      ctx.lineWidth = thickness
 
-      // Start position accounting for phase
-      let x = -phase
-      let isGoingUp = true
+      // Sample at regular t intervals for smooth rendering
+      const step = 1 // Sample every unit in t-space
+      let isFirstPoint = true
 
-      // Find first visible point
-      while (x < 0) {
-        x += wavelength / 2
-        isGoingUp = !isGoingUp
-      }
+      // Sample points from phase to phase + totalLength
+      for (let t = phase; t <= phase + totalLength; t += step) {
+        // Get parametric positions (uses modulo internally for repeating pattern)
+        const localWaveX = getWaveX(t)
+        const waveY = getWaveY(t)
 
-      // Move to starting position
-      if (isGoingUp) {
-        ctx.moveTo(x, centerY + amplitude)
-      } else {
-        ctx.moveTo(x, centerY - amplitude)
-      }
+        // Calculate absolute X position across multiple cycles
+        // Which cycle: floor(t / wavelength), position within cycle: localWaveX
+        const cycleNumber = Math.floor(t / wavelength)
+        const absoluteX = cycleNumber * wavelength + localWaveX
 
-      // Draw repeating wave pattern
-      while (x < width) {
-        if (isGoingUp) {
-          // Vertical rise
-          ctx.lineTo(x, centerY - amplitude)
+        // Center the wave: shift so the middle of displayed portion is at canvas center
+        const canvasX = centerOffset + absoluteX - phase - totalLength / 2
+        const canvasY = waveY
 
-          // Circular arc at the top (moving right)
-          const arcWidth = Math.min(radius * 2, wavelength / 2)
-          ctx.arc(
-            x + arcWidth / 2,
-            centerY - amplitude,
-            arcWidth / 2,
-            Math.PI,
-            0,
-            false // clockwise to go over the top
-          )
-          x += arcWidth
-
-          // Vertical fall (if there's room for it)
-          const fallX = x + (wavelength / 2 - arcWidth)
-          ctx.lineTo(fallX, centerY - amplitude)
-          ctx.lineTo(fallX, centerY + amplitude)
-          x = fallX
-
-          isGoingUp = false
-        } else {
-          // Already at bottom, draw circular arc at the bottom
-          const arcWidth = Math.min(radius * 2, wavelength / 2)
-          ctx.arc(
-            x + arcWidth / 2,
-            centerY + amplitude,
-            arcWidth / 2,
-            Math.PI,
-            0,
-            true // counterclockwise to go under the bottom
-          )
-          x += arcWidth
-
-          // Vertical rise (if there's room for it)
-          const riseX = x + (wavelength / 2 - arcWidth)
-          ctx.lineTo(riseX, centerY + amplitude)
-          ctx.lineTo(riseX, centerY - amplitude)
-          x = riseX
-
-          isGoingUp = true
+        // Only draw if within canvas bounds
+        if (canvasX >= 0 && canvasX <= width) {
+          if (isFirstPoint) {
+            ctx.moveTo(canvasX, canvasY)
+            isFirstPoint = false
+          } else {
+            ctx.lineTo(canvasX, canvasY)
+          }
         }
       }
 
       ctx.stroke()
     }
 
+    const animate = () => {
+      // Update phase based on speed and wavelength
+      // Speed now represents cycles per unit time, independent of wavelength
+      phaseRef.current += speed * (wavelength / 100)
+
+      // Draw the wave with the current phase
+      drawWave(phaseRef.current)
+
+      // Request next frame
+      animationFrameRef.current = requestAnimationFrame(animate)
+    }
+
     resizeCanvas()
     window.addEventListener('resize', resizeCanvas)
 
+    // Start animation
+    animate()
+
     return () => {
       window.removeEventListener('resize', resizeCanvas)
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current)
+      }
     }
-  }, [amplitude, wavelength, phase])
+  }, [amplitude, wavelength, speed, cycles, isDarkMode, thickness])
 
   return (
     <div className="wave">
