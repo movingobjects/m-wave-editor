@@ -1,0 +1,116 @@
+/* Radix UI Component Styles */
+
+/* Dark Mode Variables */
+.dark {
+  --switch-bg: #666;
+  --switch-bg-checked: #0f9;
+  --switch-thumb: black;
+
+  --slider-track: rgba(255, 255, 255, 0.2);
+  --slider-range: #0f9;
+  --slider-thumb: black;
+  --slider-thumb-border: #0f9;
+  --slider-thumb-hover: #e5e5e5;
+  --slider-focus-ring: rgba(59, 130, 246, 0.4);
+}
+
+/* Light Mode Variables */
+.light {
+  --switch-bg: #ccc;
+  --switch-bg-checked: #0d8;
+  --switch-thumb: white;
+
+  --slider-track: rgba(0, 0, 0, 0.15);
+  --slider-range: #0d8;
+  --slider-thumb: #0d8;
+  --slider-thumb-border: #0d8;
+  --slider-thumb-hover: #0c7;
+  --slider-focus-ring: rgba(37, 99, 235, 0.3);
+}
+
+/* Switch Component */
+.switch-root {
+  width: 42px;
+  height: 24px;
+  border-radius: 9999px;
+  border: 2px solid var(--switch-bg);
+  background-color: var(--switch-bg);
+  position: relative;
+  cursor: pointer;
+  transition: background-color 150ms;
+}
+
+/* Switch Styling */
+
+.switch-root[data-state='checked'] {
+  background-color: var(--switch-bg-checked);
+  border-color: var(--switch-bg-checked);
+}
+
+.switch-thumb {
+  background-color: var(--switch-thumb);
+}
+
+.switch-thumb {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  transition: transform 150ms, background-color 150ms;
+  will-change: transform;
+}
+
+.switch-root[data-state='checked'] .switch-thumb {
+  transform: translateX(18px);
+}
+
+/* Slider Component */
+.slider-root {
+  position: relative;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  touch-action: none;
+  width: 100%;
+  height: 20px;
+}
+
+.slider-track {
+  position: relative;
+  flex-grow: 1;
+  border-radius: 9999px;
+  height: 8px;
+  background-color: var(--slider-track);
+  transition: background-color 150ms;
+}
+
+/* Slider Styling */
+
+.slider-range {
+  position: absolute;
+  border-radius: 9999px;
+  height: 100%;
+  transition: background-color 150ms;
+  background-color: var(--slider-range);
+}
+
+.slider-thumb {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  cursor: pointer;
+  background-color: var(--slider-thumb);
+  border: 2px solid var(--slider-thumb-border);
+  transition: background-color 150ms, box-shadow 150ms;
+}
+
+.slider-thumb:hover {
+  background-color: var(--slider-thumb-hover);
+}
+
+.slider-thumb:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--slider-focus-ring);
+}
+
