@@ -1,3 +1,5 @@
+@import '../../styles/tokens.css';
+
 .app {
   display: flex;
   height: 100vh;
@@ -5,25 +7,25 @@
 }
 
 .app.dark {
-  background: #000;
-  color: #fff;
+  background: var(--color-bg-dark);
+  color: var(--color-text-dark);
 }
 
 .app.light {
-  background: #fff;
-  color: #000;
+  background: var(--color-bg-light);
+  color: var(--color-text-light);
 }
 
 .controls-container {
   width: 250px;
-  padding: 25px;
+  padding: var(--spacing-lg);
   overflow-y: auto;
   -webkit-app-region: no-drag;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid var(--color-border-light);
 }
 
 .app.dark .controls-container {
-  border-right: 1px solid #222;
+  border-right: 1px solid var(--color-border-dark);
 }
 
 .wave-container {
@@ -32,9 +34,3 @@
   align-items: center;
   justify-content: center;
 }
-
-.sine-wave-canvas {
-  width: 100%;
-  height: 100%;
-}
-

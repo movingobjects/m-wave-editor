@@ -1,0 +1,44 @@
+/**
+ * Design tokens - CSS custom properties
+ * Single source of truth for colors, spacing, and other design values
+ */
+
+:root {
+  /* Colors */
+  --color-primary: #44f;
+  --color-primary-rgb: 68, 68, 255;
+
+  --color-bg-dark: #000;
+  --color-bg-light: #fff;
+
+  --color-text-dark: #fff;
+  --color-text-light: #000;
+
+  --color-label-dark: #777;
+  --color-label-light: #666;
+
+  --color-border-dark: #222;
+  --color-border-light: #ddd;
+
+  /* Spacing */
+  --spacing-sm: 6px;
+  --spacing-md: 20px;
+  --spacing-lg: 25px;
+
+  /* Border radius */
+  --radius-sm: 5px;
+  --radius-md: 15px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 150ms;
+  --transition-medium: 250ms;
+
+  /* Sizes */
+  --control-group-gap: 8px;
+  --slider-height: 5px;
+  --slider-thumb-size: 20px;
+  --switch-width: 42px;
+  --switch-height: 24px;
+  --switch-thumb-size: 20px;
+}

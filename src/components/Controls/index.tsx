@@ -1,142 +1,79 @@
 import * as Switch from '@radix-ui/react-switch'
-import * as Slider from '@radix-ui/react-slider'
+import { SliderControl } from './SliderControl'
+import { WAVE_BOUNDS, WAVE_CONSTRAINTS } from '../../config/waveConfig'
+import type { WaveSettings } from '../../types/wave'
 import '../../styles/radix.css'
 import './index.css'
 
 interface ControlsProps {
-  isDarkMode: boolean
-  setIsDarkMode: (value: boolean) => void
-  amplitude: number
-  setAmplitude: (value: number) => void
-  wavelength: number
-  setWavelength: (value: number) => void
-  speed: number
-  setSpeed: (value: number) => void
-  cycles: number
-  setCycles: (value: number) => void
-  thickness: number
-  setThickness: (value: number) => void
-  onResetClick: () => void
+  settings: WaveSettings
+  onUpdateSettings: (updates: Partial<Omit<WaveSettings, 'isDarkMode'>>) => void
+  onSetDarkMode: (isDarkMode: boolean) => void
+  onReset: () => void
 }
 
-const Controls = ({
-  isDarkMode,
-  setIsDarkMode,
-  amplitude,
-  setAmplitude,
-  wavelength,
-  setWavelength,
-  speed,
-  setSpeed,
-  cycles,
-  setCycles,
-  thickness,
-  setThickness,
-  onResetClick
-}: ControlsProps) => {
+const Controls = ({ settings, onUpdateSettings, onSetDarkMode, onReset }: ControlsProps) => {
+  const minWavelength = Math.max(
+    WAVE_BOUNDS.wavelength.min,
+    settings.thickness * WAVE_CONSTRAINTS.minWavelengthToThicknessRatio
+  )
+
   return (
     <div className="controls">
       <h2>m wave</h2>
 
-      <div className="control-group">
-        <label htmlFor="amplitude">
-          Amplitude: <span className="value">{amplitude}</span>
-        </label>
-        <Slider.Root
-          id="amplitude"
-          className="slider-root"
-          min={5}
-          max={300}
-          step={5}
-          value={[amplitude]}
-          onValueChange={(value) => setAmplitude(value[0])}
-        >
-          <Slider.Track className="slider-track">
-            <Slider.Range className="slider-range" />
-          </Slider.Track>
-          <Slider.Thumb className="slider-thumb" />
-        </Slider.Root>
-      </div>
+      <SliderControl
+        id="amplitude"
+        label="Amplitude"
+        value={settings.amplitude}
+        onChange={(amplitude) => onUpdateSettings({ amplitude })}
+        min={WAVE_BOUNDS.amplitude.min}
+        max={WAVE_BOUNDS.amplitude.max}
+        step={WAVE_BOUNDS.amplitude.step}
+      />
 
-      <div className="control-group">
-        <label htmlFor="wavelength">
-          Wavelength: <span className="value">{wavelength}</span>
-        </label>
-        <Slider.Root
-          id="wavelength"
-          className="slider-root"
-          min={Math.max(5, thickness * 2)}
-          max={500}
-          step={5}
-          value={[wavelength]}
-          onValueChange={(value) => setWavelength(value[0])}
-        >
-          <Slider.Track className="slider-track">
-            <Slider.Range className="slider-range" />
-          </Slider.Track>
-          <Slider.Thumb className="slider-thumb" />
-        </Slider.Root>
-      </div>
+      <SliderControl
+        id="wavelength"
+        label="Wavelength"
+        value={settings.wavelength}
+        onChange={(wavelength) => onUpdateSettings({ wavelength })}
+        min={minWavelength}
+        max={WAVE_BOUNDS.wavelength.max}
+        step={WAVE_BOUNDS.wavelength.step}
+      />
 
-      <div className="control-group">
-        <label htmlFor="speed">
-          Speed: <span className="value">{speed.toFixed(1)}</span>
-        </label>
-        <Slider.Root
-          id="speed"
-          className="slider-root"
-          min={0}
-          max={3}
-          step={0.1}
-          value={[speed]}
-          onValueChange={(value) => setSpeed(value[0])}
-        >
-          <Slider.Track className="slider-track">
-            <Slider.Range className="slider-range" />
-          </Slider.Track>
-          <Slider.Thumb className="slider-thumb" />
-        </Slider.Root>
-      </div>
+      <SliderControl
+        id="speed"
+        label="Speed"
+        value={settings.speed}
+        onChange={(speed) => onUpdateSettings({ speed })}
+        min={WAVE_BOUNDS.speed.min}
+        max={WAVE_BOUNDS.speed.max}
+        step={WAVE_BOUNDS.speed.step}
+        decimals={1}
+      />
 
-      <div className="control-group">
-        <label htmlFor="cycles">
-          Cycles: <span className="value">{cycles.toFixed(2)}</span>
-        </label>
-        <Slider.Root
-          id="cycles"
-          className="slider-root"
-          min={0}
-          max={5}
-          step={0.1}
-          value={[cycles]}
-          onValueChange={(value) => setCycles(value[0])}
-        >
-          <Slider.Track className="slider-track">
-            <Slider.Range className="slider-range" />
-          </Slider.Track>
-          <Slider.Thumb className="slider-thumb" />
-        </Slider.Root>
-      </div>
+      <SliderControl
+        id="cycles"
+        label="Cycles"
+        value={settings.cycles}
+        onChange={(cycles) => onUpdateSettings({ cycles })}
+        min={WAVE_BOUNDS.cycles.min}
+        max={WAVE_BOUNDS.cycles.max}
+        step={WAVE_BOUNDS.cycles.step}
+        decimals={2}
+      />
 
-      <div className="control-group">
-        <label htmlFor="thickness">
-          Thickness: <span className="value">{thickness.toFixed(1)}</span>
-        </label>
-        <Slider.Root
-          id="thickness"
-          className="slider-root"
-          min={1}
-          max={100}
-          step={0.5}
-          value={[thickness]}
-          onValueChange={(value) => setThickness(value[0])}
-        >
-          <Slider.Track className="slider-track">
-            <Slider.Range className="slider-range" />
-          </Slider.Track>
-          <Slider.Thumb className="slider-thumb" />
-        </Slider.Root>
-      </div>
+      <SliderControl
+        id="thickness"
+        label="Thickness"
+        value={settings.thickness}
+        onChange={(thickness) => onUpdateSettings({ thickness })}
+        min={WAVE_BOUNDS.thickness.min}
+        max={WAVE_BOUNDS.thickness.max}
+        step={WAVE_BOUNDS.thickness.step}
+        decimals={1}
+      />
 
       <div className="control-group">
         <label htmlFor="darkMode" className="switch-label">
@@ -145,22 +82,18 @@ const Controls = ({
         <Switch.Root
           id="darkMode"
           className="switch-root"
-          checked={isDarkMode}
-          onCheckedChange={setIsDarkMode}
+          checked={settings.isDarkMode}
+          onCheckedChange={onSetDarkMode}
         >
           <Switch.Thumb className="switch-thumb" />
         </Switch.Root>
       </div>
 
-      <button
-        className="reset"
-        onClick={onResetClick}>
+      <button className="reset" onClick={onReset}>
         Reset
       </button>
-
     </div>
   )
 }
 
 export default Controls
-

@@ -1,26 +1,31 @@
+@import '../../styles/tokens.css';
+
 .controls {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--spacing-md);
 }
 
 .control-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--spacing-sm);
 }
 
 .dark .control-group label {
-  color: #777;
+  color: var(--color-label-dark);
 }
+
 .light .control-group label {
-  color: #666;
+  color: var(--color-label-light);
 }
+
 .dark .control-group label .value {
-  color: white;
+  color: var(--color-text-dark);
 }
+
 .light .control-group label .value {
-  color: black;
+  color: var(--color-text-light);
 }
 
 .control-group label {
@@ -39,8 +44,9 @@
 }
 
 .dark button.reset {
-  color: black;
+  color: var(--color-text-light);
 }
+
 .dark button.reset:hover {
   background-color: #eee;
 }
@@ -49,18 +55,20 @@ button.reset {
   appearance: none;
   cursor: pointer;
   border: none;
-  border-radius: 99px;
+  border-radius: var(--radius-full);
   padding: 8px;
   font-size: 11px;
-  background-color: #44f;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-text-dark);
   text-transform: uppercase;
   letter-spacing: 0.1em;
+  transition: background-color var(--transition-fast);
 }
+
 button.reset:hover {
-  background-color: black;
+  background-color: var(--color-bg-dark);
 }
+
 button.reset:active {
   opacity: 0.9;
 }
-

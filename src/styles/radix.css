@@ -1,38 +1,39 @@
 /* Radix UI Component Styles */
+@import './tokens.css';
 
 /* Dark Mode Variables */
 .dark {
   --switch-bg: #333;
-  --switch-bg-checked: #44f;
-  --switch-thumb: black;
+  --switch-bg-checked: var(--color-primary);
+  --switch-thumb: var(--color-bg-dark);
 
   --slider-track: #333;
-  --slider-range: #44f;
-  --slider-thumb: black;
-  --slider-thumb-border: #44f;
-  --slider-thumb-hover: rgb(68, 68, 255);
-  --slider-focus-ring: rgb(68, 68, 255, 0.5);
+  --slider-range: var(--color-primary);
+  --slider-thumb: var(--color-bg-dark);
+  --slider-thumb-border: var(--color-primary);
+  --slider-thumb-hover: var(--color-primary);
+  --slider-focus-ring: rgba(var(--color-primary-rgb), 0.5);
 }
 
 /* Light Mode Variables */
 .light {
   --switch-bg: #ccc;
-  --switch-bg-checked: #44f;
-  --switch-thumb: white;
+  --switch-bg-checked: var(--color-primary);
+  --switch-thumb: var(--color-bg-light);
 
   --slider-track: #ccc;
-  --slider-range: #44f;
-  --slider-thumb: white;
-  --slider-thumb-border: #44f;
-  --slider-thumb-hover: #44f;
-  --slider-focus-ring: rgb(68, 68, 255, 0.35);
+  --slider-range: var(--color-primary);
+  --slider-thumb: var(--color-bg-light);
+  --slider-thumb-border: var(--color-primary);
+  --slider-thumb-hover: var(--color-primary);
+  --slider-focus-ring: rgba(var(--color-primary-rgb), 0.35);
 }
 
 /* Switch Component */
 .switch-root {
-  width: 42px;
-  height: 24px;
-  border-radius: 9999px;
+  width: var(--switch-width);
+  height: var(--switch-height);
+  border-radius: var(--radius-full);
   border: 2px solid var(--switch-bg);
   background-color: var(--switch-bg);
   position: relative;
@@ -52,10 +53,10 @@
 
 .switch-thumb {
   display: block;
-  width: 20px;
-  height: 20px;
-  border-radius: 9999px;
-  transition: transform 0.2s;
+  width: var(--switch-thumb-size);
+  height: var(--switch-thumb-size);
+  border-radius: var(--radius-full);
+  transition: transform var(--transition-medium);
   will-change: transform;
 }
 
@@ -71,14 +72,14 @@
   user-select: none;
   touch-action: none;
   width: 100%;
-  height: 20px;
+  height: var(--slider-thumb-size);
 }
 
 .slider-track {
   position: relative;
   flex-grow: 1;
-  border-radius: 9999px;
-  height: 8px;
+  border-radius: var(--radius-full);
+  height: var(--slider-height);
   background-color: var(--slider-track);
 }
 
@@ -86,16 +87,16 @@
 
 .slider-range {
   position: absolute;
-  border-radius: 9999px;
+  border-radius: var(--radius-full);
   height: 100%;
   background-color: var(--slider-range);
 }
 
 .slider-thumb {
   display: block;
-  width: 20px;
-  height: 20px;
-  border-radius: 9999px;
+  width: var(--slider-thumb-size);
+  height: var(--slider-thumb-size);
+  border-radius: var(--radius-full);
   cursor: pointer;
   background-color: var(--slider-thumb);
   border: 3px solid var(--slider-thumb-border);
