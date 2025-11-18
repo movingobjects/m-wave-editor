@@ -65,7 +65,7 @@ const Controls = ({
         <Slider.Root
           id="wavelength"
           className="slider-root"
-          min={10}
+          min={Math.max(5, thickness * 2)}
           max={500}
           step={5}
           value={[wavelength]}
@@ -107,7 +107,7 @@ const Controls = ({
           className="slider-root"
           min={0}
           max={5}
-          step={0.25}
+          step={0.1}
           value={[cycles]}
           onValueChange={(value) => setCycles(value[0])}
         >

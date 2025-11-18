@@ -21,6 +21,15 @@ function App() {
   const [cycles, setCycles] = useState(DEFAULT_VALUES.cycles)
   const [thickness, setThickness] = useState(DEFAULT_VALUES.thickness)
 
+  const handleThicknessChange = (newThickness: number) => {
+    setThickness(newThickness)
+    // Ensure wavelength is at least twice the thickness
+    const minWavelength = newThickness * 2
+    if (wavelength < minWavelength) {
+      setWavelength(minWavelength)
+    }
+  }
+
   const onResetClick = () => {
     setIsDarkMode(DEFAULT_VALUES.isDarkMode)
     setAmplitude(DEFAULT_VALUES.amplitude)
@@ -45,7 +54,7 @@ function App() {
           cycles={cycles}
           setCycles={setCycles}
           thickness={thickness}
-          setThickness={setThickness}
+          setThickness={handleThicknessChange}
           onResetClick={onResetClick}
         />
       </div>

@@ -12,7 +12,7 @@ interface WaveProps {
 
 const Wave = ({ amplitude, wavelength, speed, cycles, isDarkMode, thickness }: WaveProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const phaseRef = useRef(0)
+  const normalizedPhaseRef = useRef(0) // Phase as a fraction of wavelength (wavelength-independent)
   const animationFrameRef = useRef<number>()
 
   useEffect(() => {
@@ -146,12 +146,15 @@ const Wave = ({ amplitude, wavelength, speed, cycles, isDarkMode, thickness }: W
     }
 
     const animate = () => {
-      // Update phase based on speed and wavelength
-      // Speed now represents cycles per unit time, independent of wavelength
-      phaseRef.current += speed * (wavelength / 100)
+      // Update normalized phase (wavelength-independent)
+      // Increment represents fraction of a wavelength to advance
+      normalizedPhaseRef.current += speed / 100
 
-      // Draw the wave with the current phase
-      drawWave(phaseRef.current)
+      // Convert normalized phase to actual phase by multiplying with current wavelength
+      const actualPhase = normalizedPhaseRef.current * wavelength
+
+      // Draw the wave with the actual phase
+      drawWave(actualPhase)
 
       // Request next frame
       animationFrameRef.current = requestAnimationFrame(animate)
