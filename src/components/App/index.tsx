@@ -5,12 +5,30 @@ import Wave from '../Wave'
 
 function App() {
 
-  const [isDarkMode, setIsDarkMode] = useState(true)
-  const [amplitude, setAmplitude] = useState(150)
-  const [wavelength, setWavelength] = useState(200)
-  const [speed, setSpeed] = useState(1.2)
-  const [cycles, setCycles] = useState(2.5)
-  const [thickness, setLineThickness] = useState(50)
+  const DEFAULT_VALUES = {
+    isDarkMode: true,
+    amplitude: 150,
+    wavelength: 200,
+    speed: 1.2,
+    cycles: 2.5,
+    thickness: 50,
+  };
+
+  const [isDarkMode, setIsDarkMode] = useState(DEFAULT_VALUES.isDarkMode)
+  const [amplitude, setAmplitude] = useState(DEFAULT_VALUES.amplitude)
+  const [wavelength, setWavelength] = useState(DEFAULT_VALUES.wavelength)
+  const [speed, setSpeed] = useState(DEFAULT_VALUES.speed)
+  const [cycles, setCycles] = useState(DEFAULT_VALUES.cycles)
+  const [thickness, setThickness] = useState(DEFAULT_VALUES.thickness)
+
+  const onResetClick = () => {
+    setIsDarkMode(DEFAULT_VALUES.isDarkMode)
+    setAmplitude(DEFAULT_VALUES.amplitude)
+    setWavelength(DEFAULT_VALUES.wavelength)
+    setSpeed(DEFAULT_VALUES.speed)
+    setCycles(DEFAULT_VALUES.cycles)
+    setThickness(DEFAULT_VALUES.thickness)
+  }
 
   return (
     <div className={`app ${isDarkMode ? 'dark' : 'light'}`}>
@@ -27,7 +45,8 @@ function App() {
           cycles={cycles}
           setCycles={setCycles}
           thickness={thickness}
-          setLineThickness={setLineThickness}
+          setThickness={setThickness}
+          onResetClick={onResetClick}
         />
       </div>
 

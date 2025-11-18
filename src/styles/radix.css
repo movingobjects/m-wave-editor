@@ -2,30 +2,30 @@
 
 /* Dark Mode Variables */
 .dark {
-  --switch-bg: #666;
-  --switch-bg-checked: #0f9;
+  --switch-bg: #333;
+  --switch-bg-checked: #44f;
   --switch-thumb: black;
 
-  --slider-track: rgba(255, 255, 255, 0.2);
-  --slider-range: #0f9;
+  --slider-track: #333;
+  --slider-range: #44f;
   --slider-thumb: black;
-  --slider-thumb-border: #0f9;
-  --slider-thumb-hover: #e5e5e5;
-  --slider-focus-ring: rgba(59, 130, 246, 0.4);
+  --slider-thumb-border: #44f;
+  --slider-thumb-hover: rgb(68, 68, 255);
+  --slider-focus-ring: rgb(68, 68, 255, 0.5);
 }
 
 /* Light Mode Variables */
 .light {
   --switch-bg: #ccc;
-  --switch-bg-checked: #0d8;
+  --switch-bg-checked: #44f;
   --switch-thumb: white;
 
-  --slider-track: rgba(0, 0, 0, 0.15);
-  --slider-range: #0d8;
-  --slider-thumb: #0d8;
-  --slider-thumb-border: #0d8;
-  --slider-thumb-hover: #0c7;
-  --slider-focus-ring: rgba(37, 99, 235, 0.3);
+  --slider-track: #ccc;
+  --slider-range: #44f;
+  --slider-thumb: white;
+  --slider-thumb-border: #44f;
+  --slider-thumb-hover: #44f;
+  --slider-focus-ring: rgb(68, 68, 255, 0.35);
 }
 
 /* Switch Component */
@@ -37,7 +37,6 @@
   background-color: var(--switch-bg);
   position: relative;
   cursor: pointer;
-  transition: background-color 150ms;
 }
 
 /* Switch Styling */
@@ -56,7 +55,7 @@
   width: 20px;
   height: 20px;
   border-radius: 9999px;
-  transition: transform 150ms, background-color 150ms;
+  transition: transform 0.2s;
   will-change: transform;
 }
 
@@ -81,7 +80,6 @@
   border-radius: 9999px;
   height: 8px;
   background-color: var(--slider-track);
-  transition: background-color 150ms;
 }
 
 /* Slider Styling */
@@ -90,7 +88,6 @@
   position: absolute;
   border-radius: 9999px;
   height: 100%;
-  transition: background-color 150ms;
   background-color: var(--slider-range);
 }
 
@@ -101,8 +98,7 @@
   border-radius: 9999px;
   cursor: pointer;
   background-color: var(--slider-thumb);
-  border: 2px solid var(--slider-thumb-border);
-  transition: background-color 150ms, box-shadow 150ms;
+  border: 3px solid var(--slider-thumb-border);
 }
 
 .slider-thumb:hover {
@@ -111,6 +107,6 @@
 
 .slider-thumb:focus {
   outline: none;
-  box-shadow: 0 0 0 3px var(--slider-focus-ring);
+  box-shadow: 0 0 0 4px var(--slider-focus-ring);
 }
 

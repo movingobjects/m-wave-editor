@@ -7,14 +7,60 @@
 .control-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+}
+
+.dark .control-group label {
+  color: #777;
+}
+.light .control-group label {
+  color: #666;
+}
+.dark .control-group label .value {
+  color: white;
+}
+.light .control-group label .value {
+  color: black;
 }
 
 .control-group label {
-  color: #999;
-  font-size: 14px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.control-group label .value {
+  float: right;
+  font-weight: bold;
 }
 
 .switch-label {
   cursor: pointer;
 }
+
+.dark button.reset {
+  color: black;
+}
+.dark button.reset:hover {
+  background-color: #eee;
+}
+
+button.reset {
+  appearance: none;
+  cursor: pointer;
+  border: none;
+  border-radius: 99px;
+  padding: 8px;
+  font-size: 11px;
+  background-color: #44f;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+button.reset:hover {
+  background-color: black;
+}
+button.reset:active {
+  opacity: 0.9;
+}
+
