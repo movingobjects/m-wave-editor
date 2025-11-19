@@ -189,6 +189,7 @@ const Wave = ({ amplitude, wavelength, speed, cycles, isDarkMode, thickness }: W
       ctx.beginPath()
       ctx.strokeStyle = isDarkMode ? '#ffffff' : '#000000'
       ctx.lineWidth = thickness
+      ctx.lineCap = 'round'
 
       let isFirstPoint = true
 
