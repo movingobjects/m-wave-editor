@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import './index.css'
 
 interface WaveProps {
-  amplitude: number
+  height: number
   wavelength: number
   speed: number
   cycles: number
@@ -10,18 +10,18 @@ interface WaveProps {
   thickness: number
 }
 
-const Wave = ({ amplitude, wavelength, speed, cycles, isDarkMode, thickness }: WaveProps) => {
+const Wave = ({ height, wavelength, speed, cycles, isDarkMode, thickness }: WaveProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const normalizedPhaseRef = useRef(0) // Phase as a fraction of wavelength (wavelength-independent)
   const animationFrameRef = useRef<number>()
 
   // Store wave parameters in refs so animation loop can access current values without restarting
-  const paramsRef = useRef({ amplitude, wavelength, speed, cycles, isDarkMode, thickness })
+  const paramsRef = useRef({ height, wavelength, speed, cycles, isDarkMode, thickness })
 
   // Update refs when props change (no animation restart)
   useEffect(() => {
-    paramsRef.current = { amplitude, wavelength, speed, cycles, isDarkMode, thickness }
-  }, [amplitude, wavelength, speed, cycles, isDarkMode, thickness])
+    paramsRef.current = { height, wavelength, speed, cycles, isDarkMode, thickness }
+  }, [height, wavelength, speed, cycles, isDarkMode, thickness])
 
   // Handle canvas resizing independently
   useEffect(() => {
@@ -93,9 +93,18 @@ const Wave = ({ amplitude, wavelength, speed, cycles, isDarkMode, thickness }: W
     }
 
     const getWaveY = (parameterT: number) => {
-      const { wavelength, amplitude } = paramsRef.current
+      const { wavelength, height, thickness } = paramsRef.current
       const canvasCenterY = canvas.height / 2
       const radius = wavelength / SECTIONS_PER_WAVELENGTH
+
+      // Adjust for stroke thickness - stroke is centered on the path
+      const effectiveHeight = height - thickness / 2
+
+      // Calculate amplitude accounting for the arc bulge
+      // Total visual height = 2 * amplitude + 2 * radius (from top and bottom arcs)
+      // We want: 2 * amplitude + 2 * radius = effectiveHeight
+      // So: amplitude = (effectiveHeight - 2 * radius) / 2
+      const amplitude = (effectiveHeight - 2 * radius) / 2
 
       const normalizedT = normalizeParameter(parameterT, wavelength)
       const sectionLength = wavelength / SECTIONS_PER_WAVELENGTH

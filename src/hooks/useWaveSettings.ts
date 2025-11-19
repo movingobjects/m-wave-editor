@@ -9,7 +9,7 @@ import type { WaveSettings, UseWaveSettingsReturn } from '../types/wave'
 export function useWaveSettings(): UseWaveSettingsReturn {
   const [settings, setSettings] = useState<WaveSettings>({
     isDarkMode: DEFAULT_SETTINGS.isDarkMode,
-    amplitude: DEFAULT_SETTINGS.amplitude,
+    height: DEFAULT_SETTINGS.height,
     wavelength: DEFAULT_SETTINGS.wavelength,
     speed: DEFAULT_SETTINGS.speed,
     cycles: DEFAULT_SETTINGS.cycles,
@@ -26,6 +26,20 @@ export function useWaveSettings(): UseWaveSettingsReturn {
         if (newSettings.wavelength < minWavelength) {
           newSettings.wavelength = minWavelength
         }
+
+        // Apply validation: height must be at least 0.5x thickness
+        const minHeightFromThickness = updates.thickness! * WAVE_CONSTRAINTS.minHeightToThicknessRatio
+        if (newSettings.height < minHeightFromThickness) {
+          newSettings.height = minHeightFromThickness
+        }
+      }
+
+      // Apply validation: height must be at least 2/3 of wavelength
+      if ('wavelength' in updates) {
+        const minHeightFromWavelength = updates.wavelength! * WAVE_CONSTRAINTS.minHeightToWavelengthRatio
+        if (newSettings.height < minHeightFromWavelength) {
+          newSettings.height = minHeightFromWavelength
+        }
       }
 
       return newSettings
@@ -39,7 +53,7 @@ export function useWaveSettings(): UseWaveSettingsReturn {
   const resetSettings = useCallback(() => {
     setSettings({
       isDarkMode: DEFAULT_SETTINGS.isDarkMode,
-      amplitude: DEFAULT_SETTINGS.amplitude,
+      height: DEFAULT_SETTINGS.height,
       wavelength: DEFAULT_SETTINGS.wavelength,
       speed: DEFAULT_SETTINGS.speed,
       cycles: DEFAULT_SETTINGS.cycles,

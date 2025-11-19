@@ -18,18 +18,24 @@ const Controls = ({ settings, onUpdateSettings, onSetDarkMode, onReset }: Contro
     settings.thickness * WAVE_CONSTRAINTS.minWavelengthToThicknessRatio
   )
 
+  const minHeight = Math.max(
+    WAVE_BOUNDS.height.min,
+    settings.thickness * WAVE_CONSTRAINTS.minHeightToThicknessRatio,
+    settings.wavelength * WAVE_CONSTRAINTS.minHeightToWavelengthRatio
+  )
+
   return (
     <div className="controls">
       <h2>m wave</h2>
 
       <SliderControl
-        id="amplitude"
-        label="Amplitude"
-        value={settings.amplitude}
-        onChange={(amplitude) => onUpdateSettings({ amplitude })}
-        min={WAVE_BOUNDS.amplitude.min}
-        max={WAVE_BOUNDS.amplitude.max}
-        step={WAVE_BOUNDS.amplitude.step}
+        id="height"
+        label="Height"
+        value={settings.height}
+        onChange={(height) => onUpdateSettings({ height })}
+        min={minHeight}
+        max={WAVE_BOUNDS.height.max}
+        step={WAVE_BOUNDS.height.step}
       />
 
       <SliderControl

@@ -4,14 +4,14 @@
 
 export interface WaveSettings {
   readonly isDarkMode: boolean
-  readonly amplitude: number
+  readonly height: number
   readonly wavelength: number
   readonly speed: number
   readonly cycles: number
   readonly thickness: number
 }
 
-export type WaveParameter = 'amplitude' | 'wavelength' | 'speed' | 'cycles' | 'thickness'
+export type WaveParameter = 'height' | 'wavelength' | 'speed' | 'cycles' | 'thickness'
 
 export interface WaveSettingsActions {
   updateSettings: (updates: Partial<Omit<WaveSettings, 'isDarkMode'>>) => void

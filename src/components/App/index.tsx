@@ -19,7 +19,7 @@ function App() {
 
       <div className="wave-container">
         <Wave
-          amplitude={settings.amplitude}
+          height={settings.height}
           wavelength={settings.wavelength}
           speed={settings.speed}
           cycles={settings.cycles}
