@@ -21,10 +21,10 @@ export function useWaveSettings(): UseWaveSettingsReturn {
         }
       }
 
-      // Apply validation: height must be at least (wavelength + thickness) / 2
-      const minHeight = WAVE_CONSTRAINTS.minHeightCalculation(newSettings.wavelength, newSettings.thickness)
-      if (newSettings.height < minHeight) {
-        newSettings.height = minHeight
+      // Apply validation: amplitude must be at least (wavelength + thickness) / 2
+      const minAmplitude = WAVE_CONSTRAINTS.minAmplitudeCalculation(newSettings.wavelength, newSettings.thickness)
+      if (newSettings.amplitude < minAmplitude) {
+        newSettings.amplitude = minAmplitude
       }
 
       return newSettings

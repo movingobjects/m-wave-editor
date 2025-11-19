@@ -8,7 +8,7 @@ const SAMPLES_PER_WAVELENGTH = 400
 const FPS_NORMALIZATION = 60 // Normalize to 60fps for consistent speed
 
 interface WaveProps {
-  height: number
+  amplitude: number
   wavelength: number
   speed: number
   cycles: number
@@ -54,19 +54,19 @@ const calculateSectionBoundaries = (wavelength: number, amplitude: number): Sect
   }
 }
 
-const Wave = ({ height, wavelength, speed, cycles, isDarkMode, thickness }: WaveProps) => {
+const Wave = ({ amplitude, wavelength, speed, cycles, isDarkMode, thickness }: WaveProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const normalizedPhaseRef = useRef(0) // Phase as a fraction of wavelength (wavelength-independent)
   const animationFrameRef = useRef<number>()
   const lastTimeRef = useRef<number>(0) // Track last frame timestamp for delta time calculation
 
   // Store wave parameters in refs so animation loop can access current values without restarting
-  const paramsRef = useRef({ height, wavelength, speed, cycles, isDarkMode, thickness })
+  const paramsRef = useRef({ amplitude, wavelength, speed, cycles, isDarkMode, thickness })
 
   // Update refs when props change (no animation restart)
   useEffect(() => {
-    paramsRef.current = { height, wavelength, speed, cycles, isDarkMode, thickness }
-  }, [height, wavelength, speed, cycles, isDarkMode, thickness])
+    paramsRef.current = { amplitude, wavelength, speed, cycles, isDarkMode, thickness }
+  }, [amplitude, wavelength, speed, cycles, isDarkMode, thickness])
 
   // Handle canvas resizing independently
   useEffect(() => {
@@ -99,13 +99,13 @@ const Wave = ({ height, wavelength, speed, cycles, isDarkMode, thickness }: Wave
      * Parametric function where both X and Y are functions of parameter t
      */
     const getWaveX = (parameterT: number) => {
-      const { wavelength, height, thickness } = paramsRef.current
+      const { wavelength, amplitude, thickness } = paramsRef.current
       const radius = wavelength / SECTIONS_PER_WAVELENGTH
-      const effectiveHeight = height - thickness / 2
-      const amplitude = (effectiveHeight - 2 * radius) / 2
+      const effectiveAmplitude = amplitude - thickness / 2
+      const waveAmplitude = (effectiveAmplitude - 2 * radius) / 2
 
       const normalizedT = normalizeParameter(parameterT, wavelength)
-      const sections = calculateSectionBoundaries(wavelength, amplitude)
+      const sections = calculateSectionBoundaries(wavelength, waveAmplitude)
 
       // Map parameter t to actual arc length position
       const arcPosition = (normalizedT / wavelength) * sections.totalArcLength
@@ -134,14 +134,14 @@ const Wave = ({ height, wavelength, speed, cycles, isDarkMode, thickness }: Wave
      * Parametric function where both X and Y are functions of parameter t
      */
     const getWaveY = (parameterT: number) => {
-      const { wavelength, height, thickness } = paramsRef.current
+      const { wavelength, amplitude, thickness } = paramsRef.current
       const canvasCenterY = canvas.height / 2
       const radius = wavelength / SECTIONS_PER_WAVELENGTH
-      const effectiveHeight = height - thickness / 2
-      const amplitude = (effectiveHeight - 2 * radius) / 2
+      const effectiveAmplitude = amplitude - thickness / 2
+      const waveAmplitude = (effectiveAmplitude - 2 * radius) / 2
 
       const normalizedT = normalizeParameter(parameterT, wavelength)
-      const sections = calculateSectionBoundaries(wavelength, amplitude)
+      const sections = calculateSectionBoundaries(wavelength, waveAmplitude)
 
       // Map parameter t to actual arc length position
       const arcPosition = (normalizedT / wavelength) * sections.totalArcLength
@@ -149,21 +149,21 @@ const Wave = ({ height, wavelength, speed, cycles, isDarkMode, thickness }: Wave
       if (arcPosition < sections.section1End) {
         // Section 1: Vertical rise - Y goes from bottom to top
         const sectionProgress = arcPosition / sections.verticalLength
-        return canvasCenterY + amplitude - (2 * amplitude * sectionProgress)
+        return canvasCenterY + waveAmplitude - (2 * waveAmplitude * sectionProgress)
       } else if (arcPosition < sections.section2End) {
         // Section 2: Top circular arc - bulges upward
         const sectionProgress = (arcPosition - sections.section1End) / sections.arcLength
         const angle = Math.PI * sectionProgress
-        return canvasCenterY - amplitude - radius * Math.sin(angle)
+        return canvasCenterY - waveAmplitude - radius * Math.sin(angle)
       } else if (arcPosition < sections.section3End) {
         // Section 3: Vertical fall - Y goes from top to bottom
         const sectionProgress = (arcPosition - sections.section2End) / sections.verticalLength
-        return canvasCenterY - amplitude + (2 * amplitude * sectionProgress)
+        return canvasCenterY - waveAmplitude + (2 * waveAmplitude * sectionProgress)
       } else {
         // Section 4: Bottom circular arc - bulges downward
         const sectionProgress = (arcPosition - sections.section3End) / sections.arcLength
         const angle = Math.PI * sectionProgress
-        return canvasCenterY + amplitude + radius * Math.sin(angle)
+        return canvasCenterY + waveAmplitude + radius * Math.sin(angle)
       }
     }
 

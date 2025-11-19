@@ -3,7 +3,21 @@
 .controls {
   display: flex;
   flex-direction: column;
+  height: 100%;
+  padding-top: var(--spacing-lg);
+}
+
+.controls-sliders {
+  display: flex;
+  flex-direction: column;
   gap: var(--spacing-md);
+  flex: 1;
+}
+
+.controls-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .control-group {
@@ -12,63 +26,80 @@
   gap: var(--spacing-sm);
 }
 
-.dark .control-group label {
+/* 3-column grid layout for sliders */
+.slider-group {
+  display: grid;
+  grid-template-columns: 20px 1fr 30px;
+  gap: 8px;
+  align-items: center;
+}
+
+.slider-icon {
+  display: flex;
+  align-items: center;
+}
+
+.dark .slider-icon {
   color: var(--color-label-dark);
 }
 
-.light .control-group label {
+.light .slider-icon {
   color: var(--color-label-light);
 }
 
-.dark .control-group label .value {
+.slider-middle {
+  display: flex;
+  align-items: center;
+}
+
+.slider-value {
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.dark .slider-value {
   color: var(--color-text-dark);
 }
 
-.light .control-group label .value {
+.light .slider-value {
   color: var(--color-text-light);
 }
 
-.control-group label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+/* Icon color inside switch thumb */
+.dark .switch-thumb {
+  color: var(--color-primary);
 }
 
-.control-group label .value {
-  float: right;
-  font-weight: bold;
-}
-
-.switch-label {
-  cursor: pointer;
-}
-
-.dark button.reset {
+.light .switch-thumb {
   color: var(--color-text-light);
 }
 
-.dark button.reset:hover {
-  background-color: #eee;
-}
-
-button.reset {
+/* Reset icon button */
+.reset-icon-button {
   appearance: none;
-  cursor: pointer;
+  background: none;
   border: none;
-  border-radius: var(--radius-full);
-  padding: 8px;
-  font-size: 11px;
-  background-color: var(--color-primary);
-  color: var(--color-text-dark);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  transition: background-color var(--transition-fast);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity var(--transition-fast);
 }
 
-button.reset:hover {
-  background-color: var(--color-bg-dark);
+.dark .reset-icon-button {
+  color: var(--color-label-dark);
 }
 
-button.reset:active {
-  opacity: 0.9;
+.light .reset-icon-button {
+  color: var(--color-label-light);
+}
+
+.reset-icon-button:hover {
+  opacity: 0.7;
+}
+
+.reset-icon-button:active {
+  opacity: 0.5;
 }

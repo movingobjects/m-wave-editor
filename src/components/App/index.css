@@ -19,7 +19,6 @@
 .controls-container {
   width: 250px;
   padding: var(--spacing-lg);
-  padding-top: var(--spacing-xl);
   overflow-y: auto;
   -webkit-app-region: no-drag;
   border-right: 1px solid var(--color-border-light);

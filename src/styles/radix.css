@@ -52,7 +52,9 @@
 }
 
 .switch-thumb {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: var(--switch-thumb-size);
   height: var(--switch-thumb-size);
   border-radius: var(--radius-full);

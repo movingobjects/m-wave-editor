@@ -1,4 +1,5 @@
 import * as Switch from '@radix-ui/react-switch'
+import { AudioWaveform, RulerDimensionLine, LineSquiggle, Repeat2, Gauge, Moon, Sun, RotateCcw } from 'lucide-react'
 import { SliderControl } from './SliderControl'
 import { WAVE_BOUNDS, WAVE_CONSTRAINTS } from '../../config/waveConfig'
 import type { WaveSettings } from '../../types/wave'
@@ -18,85 +19,89 @@ const Controls = ({ settings, onUpdateSettings, onSetDarkMode, onReset }: Contro
     settings.thickness * WAVE_CONSTRAINTS.minWavelengthToThicknessRatio
   )
 
-  const minHeight = Math.max(
-    WAVE_BOUNDS.height.min,
-    WAVE_CONSTRAINTS.minHeightCalculation(settings.wavelength, settings.thickness)
+  const minAmplitude = Math.max(
+    WAVE_BOUNDS.amplitude.min,
+    WAVE_CONSTRAINTS.minAmplitudeCalculation(settings.wavelength, settings.thickness)
   )
 
   return (
     <div className="controls">
-      <h2>m wave</h2>
+      <div className="controls-sliders">
+        <SliderControl
+          id="amplitude"
+          label="Amplitude"
+          value={settings.amplitude}
+          onChange={(amplitude) => onUpdateSettings({ amplitude })}
+          min={minAmplitude}
+          max={WAVE_BOUNDS.amplitude.max}
+          step={WAVE_BOUNDS.amplitude.step}
+          icon={AudioWaveform}
+        />
 
-      <SliderControl
-        id="height"
-        label="Height"
-        value={settings.height}
-        onChange={(height) => onUpdateSettings({ height })}
-        min={minHeight}
-        max={WAVE_BOUNDS.height.max}
-        step={WAVE_BOUNDS.height.step}
-      />
+        <SliderControl
+          id="wavelength"
+          label="Wavelength"
+          value={settings.wavelength}
+          onChange={(wavelength) => onUpdateSettings({ wavelength })}
+          min={minWavelength}
+          max={WAVE_BOUNDS.wavelength.max}
+          step={WAVE_BOUNDS.wavelength.step}
+          icon={RulerDimensionLine}
+        />
 
-      <SliderControl
-        id="wavelength"
-        label="Wavelength"
-        value={settings.wavelength}
-        onChange={(wavelength) => onUpdateSettings({ wavelength })}
-        min={minWavelength}
-        max={WAVE_BOUNDS.wavelength.max}
-        step={WAVE_BOUNDS.wavelength.step}
-      />
+        <SliderControl
+          id="thickness"
+          label="Thickness"
+          value={settings.thickness}
+          onChange={(thickness) => onUpdateSettings({ thickness })}
+          min={WAVE_BOUNDS.thickness.min}
+          max={WAVE_BOUNDS.thickness.max}
+          step={WAVE_BOUNDS.thickness.step}
+          icon={LineSquiggle}
+        />
 
-      <SliderControl
-        id="speed"
-        label="Speed"
-        value={settings.speed}
-        onChange={(speed) => onUpdateSettings({ speed })}
-        min={WAVE_BOUNDS.speed.min}
-        max={WAVE_BOUNDS.speed.max}
-        step={WAVE_BOUNDS.speed.step}
-        decimals={1}
-      />
+        <SliderControl
+          id="cycles"
+          label="Cycles"
+          value={settings.cycles}
+          onChange={(cycles) => onUpdateSettings({ cycles })}
+          min={WAVE_BOUNDS.cycles.min}
+          max={WAVE_BOUNDS.cycles.max}
+          step={WAVE_BOUNDS.cycles.step}
+          decimals={2}
+          icon={Repeat2}
+        />
 
-      <SliderControl
-        id="cycles"
-        label="Cycles"
-        value={settings.cycles}
-        onChange={(cycles) => onUpdateSettings({ cycles })}
-        min={WAVE_BOUNDS.cycles.min}
-        max={WAVE_BOUNDS.cycles.max}
-        step={WAVE_BOUNDS.cycles.step}
-        decimals={2}
-      />
+        <SliderControl
+          id="speed"
+          label="Speed"
+          value={settings.speed}
+          onChange={(speed) => onUpdateSettings({ speed })}
+          min={WAVE_BOUNDS.speed.min}
+          max={WAVE_BOUNDS.speed.max}
+          step={WAVE_BOUNDS.speed.step}
+          decimals={1}
+          icon={Gauge}
+        />
+      </div>
 
-      <SliderControl
-        id="thickness"
-        label="Thickness"
-        value={settings.thickness}
-        onChange={(thickness) => onUpdateSettings({ thickness })}
-        min={WAVE_BOUNDS.thickness.min}
-        max={WAVE_BOUNDS.thickness.max}
-        step={WAVE_BOUNDS.thickness.step}
-        decimals={1}
-      />
-
-      <div className="control-group">
-        <label htmlFor="darkMode" className="switch-label">
-          Dark Mode
-        </label>
+      <div className="controls-footer">
         <Switch.Root
           id="darkMode"
           className="switch-root"
           checked={settings.isDarkMode}
           onCheckedChange={onSetDarkMode}
+          aria-label="Toggle dark mode"
         >
-          <Switch.Thumb className="switch-thumb" />
+          <Switch.Thumb className="switch-thumb">
+            {settings.isDarkMode ? <Moon size={13} /> : <Sun size={13} />}
+          </Switch.Thumb>
         </Switch.Root>
-      </div>
 
-      <button className="reset" onClick={onReset}>
-        Reset
-      </button>
+        <button className="reset-icon-button" onClick={onReset} aria-label="Reset settings">
+          <RotateCcw size={18} />
+        </button>
+      </div>
     </div>
   )
 }

@@ -11,7 +11,7 @@ export interface WaveParameterBounds {
 }
 
 export const WAVE_BOUNDS = {
-  height: { min: 25, max: 500, step: 5, default: 300 },
+  amplitude: { min: 25, max: 500, step: 5, default: 300 },
   wavelength: { min: 10, max: 500, step: 5, default: 200 },
   speed: { min: 0, max: 5, step: 0.2  , default: 2 },
   cycles: { min: 0, max: 5, step: 0.1, default: 2.5 },
@@ -20,7 +20,7 @@ export const WAVE_BOUNDS = {
 
 export const DEFAULT_SETTINGS = {
   isDarkMode: true,
-  height: WAVE_BOUNDS.height.default,
+  amplitude: WAVE_BOUNDS.amplitude.default,
   wavelength: WAVE_BOUNDS.wavelength.default,
   speed: WAVE_BOUNDS.speed.default,
   cycles: WAVE_BOUNDS.cycles.default,
@@ -30,6 +30,6 @@ export const DEFAULT_SETTINGS = {
 export const WAVE_CONSTRAINTS = {
   // Wavelength must be at least 2x thickness
   minWavelengthToThicknessRatio: 2,
-  // Height must be at least (wavelength + thickness) / 2
-  minHeightCalculation: (wavelength: number, thickness: number) => (wavelength + thickness) / 2,
+  // Amplitude must be at least (wavelength + thickness) / 2
+  minAmplitudeCalculation: (wavelength: number, thickness: number) => (wavelength + thickness) / 2,
 } as const
