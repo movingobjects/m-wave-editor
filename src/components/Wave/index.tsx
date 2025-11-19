@@ -1,6 +1,12 @@
 import { useEffect, useRef } from 'react'
 import './index.css'
 
+// Animation constants
+const SECTIONS_PER_WAVELENGTH = 4
+const SPEED_SCALE_FACTOR = 100
+const SAMPLES_PER_WAVELENGTH = 400
+const FPS_NORMALIZATION = 60 // Normalize to 60fps for consistent speed
+
 interface WaveProps {
   height: number
   wavelength: number
@@ -8,6 +14,44 @@ interface WaveProps {
   cycles: number
   isDarkMode: boolean
   thickness: number
+}
+
+interface SectionBoundaries {
+  section1End: number
+  section2End: number
+  section3End: number
+  section4End: number
+  totalArcLength: number
+  verticalLength: number
+  arcLength: number
+}
+
+/**
+ * Normalizes parameter t to position within one wavelength (0 to wavelength)
+ * Handles negative values correctly using modulo arithmetic
+ */
+const normalizeParameter = (parameterT: number, wavelength: number): number => {
+  return ((parameterT % wavelength) + wavelength) % wavelength
+}
+
+/**
+ * Calculates section boundaries based on arc lengths for constant speed movement
+ */
+const calculateSectionBoundaries = (wavelength: number, amplitude: number): SectionBoundaries => {
+  const radius = wavelength / SECTIONS_PER_WAVELENGTH
+  const verticalLength = 2 * amplitude
+  const arcLength = Math.PI * radius
+  const totalArcLength = 2 * verticalLength + 2 * arcLength
+
+  return {
+    section1End: verticalLength,
+    section2End: verticalLength + arcLength,
+    section3End: 2 * verticalLength + arcLength,
+    section4End: totalArcLength,
+    totalArcLength,
+    verticalLength,
+    arcLength,
+  }
 }
 
 const Wave = ({ height, wavelength, speed, cycles, isDarkMode, thickness }: WaveProps) => {
@@ -50,85 +94,75 @@ const Wave = ({ height, wavelength, speed, cycles, isDarkMode, thickness }: Wave
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    // Constants for wave calculation
-    const SECTIONS_PER_WAVELENGTH = 4
-    const WAVE_SAMPLE_INTERVAL = 1
-    const SPEED_SCALE_FACTOR = 100
-
     /**
-     * Normalizes parameter t to position within one wavelength (0 to wavelength)
-     * Handles negative values correctly using modulo arithmetic
+     * Calculates the X position for a given parameter t
+     * Parametric function where both X and Y are functions of parameter t
      */
-    const normalizeParameter = (parameterT: number, wavelength: number): number => {
-      return ((parameterT % wavelength) + wavelength) % wavelength
-    }
-
-    // Parametric functions: both X and Y are functions of parameter t
-    // t represents position along the wave curve (not spatial X)
     const getWaveX = (parameterT: number) => {
-      const { wavelength } = paramsRef.current
+      const { wavelength, height, thickness } = paramsRef.current
       const radius = wavelength / SECTIONS_PER_WAVELENGTH
+      const effectiveHeight = height - thickness / 2
+      const amplitude = (effectiveHeight - 2 * radius) / 2
 
       const normalizedT = normalizeParameter(parameterT, wavelength)
-      const sectionLength = wavelength / SECTIONS_PER_WAVELENGTH
+      const sections = calculateSectionBoundaries(wavelength, amplitude)
 
-      if (normalizedT < sectionLength) {
+      // Map parameter t to actual arc length position
+      const arcPosition = (normalizedT / wavelength) * sections.totalArcLength
+
+      if (arcPosition < sections.section1End) {
         // Section 1: Vertical rise - X stays at 0
         return 0
-      } else if (normalizedT < sectionLength * 2) {
+      } else if (arcPosition < sections.section2End) {
         // Section 2: Top circular arc - X goes from 0 to 2*radius
-        const sectionStartT = normalizedT - sectionLength
-        const progress = sectionStartT / sectionLength
-        const angle = Math.PI * (1 - progress)
+        const sectionProgress = (arcPosition - sections.section1End) / sections.arcLength
+        const angle = Math.PI * (1 - sectionProgress)
         return radius + radius * Math.cos(angle)
-      } else if (normalizedT < sectionLength * 3) {
+      } else if (arcPosition < sections.section3End) {
         // Section 3: Vertical fall - X stays at 2*radius
         return 2 * radius
       } else {
         // Section 4: Bottom circular arc - X goes from 2*radius to 4*radius (wavelength)
-        const sectionStartT = normalizedT - sectionLength * 3
-        const progress = sectionStartT / sectionLength
-        const angle = Math.PI * (1 - progress)
+        const sectionProgress = (arcPosition - sections.section3End) / sections.arcLength
+        const angle = Math.PI * (1 - sectionProgress)
         return 3 * radius + radius * Math.cos(angle)
       }
     }
 
+    /**
+     * Calculates the Y position for a given parameter t
+     * Parametric function where both X and Y are functions of parameter t
+     */
     const getWaveY = (parameterT: number) => {
       const { wavelength, height, thickness } = paramsRef.current
       const canvasCenterY = canvas.height / 2
       const radius = wavelength / SECTIONS_PER_WAVELENGTH
-
-      // Adjust for stroke thickness - stroke is centered on the path
       const effectiveHeight = height - thickness / 2
-
-      // Calculate amplitude accounting for the arc bulge
-      // Total visual height = 2 * amplitude + 2 * radius (from top and bottom arcs)
-      // We want: 2 * amplitude + 2 * radius = effectiveHeight
-      // So: amplitude = (effectiveHeight - 2 * radius) / 2
       const amplitude = (effectiveHeight - 2 * radius) / 2
 
       const normalizedT = normalizeParameter(parameterT, wavelength)
-      const sectionLength = wavelength / SECTIONS_PER_WAVELENGTH
+      const sections = calculateSectionBoundaries(wavelength, amplitude)
 
-      if (normalizedT < sectionLength) {
+      // Map parameter t to actual arc length position
+      const arcPosition = (normalizedT / wavelength) * sections.totalArcLength
+
+      if (arcPosition < sections.section1End) {
         // Section 1: Vertical rise - Y goes from bottom to top
-        const progress = normalizedT / sectionLength
-        return canvasCenterY + amplitude - (2 * amplitude * progress)
-      } else if (normalizedT < sectionLength * 2) {
+        const sectionProgress = arcPosition / sections.verticalLength
+        return canvasCenterY + amplitude - (2 * amplitude * sectionProgress)
+      } else if (arcPosition < sections.section2End) {
         // Section 2: Top circular arc - bulges upward
-        const sectionStartT = normalizedT - sectionLength
-        const progress = sectionStartT / sectionLength
-        const angle = Math.PI * progress
+        const sectionProgress = (arcPosition - sections.section1End) / sections.arcLength
+        const angle = Math.PI * sectionProgress
         return canvasCenterY - amplitude - radius * Math.sin(angle)
-      } else if (normalizedT < sectionLength * 3) {
+      } else if (arcPosition < sections.section3End) {
         // Section 3: Vertical fall - Y goes from top to bottom
-        const progress = (normalizedT - sectionLength * 2) / sectionLength
-        return canvasCenterY - amplitude + (2 * amplitude * progress)
+        const sectionProgress = (arcPosition - sections.section2End) / sections.verticalLength
+        return canvasCenterY - amplitude + (2 * amplitude * sectionProgress)
       } else {
         // Section 4: Bottom circular arc - bulges downward
-        const sectionStartT = normalizedT - sectionLength * 3
-        const progress = sectionStartT / sectionLength
-        const angle = Math.PI * progress
+        const sectionProgress = (arcPosition - sections.section3End) / sections.arcLength
+        const angle = Math.PI * sectionProgress
         return canvasCenterY + amplitude + radius * Math.sin(angle)
       }
     }
@@ -148,6 +182,9 @@ const Wave = ({ height, wavelength, speed, cycles, isDarkMode, thickness }: Wave
       // Calculate where to center the wave horizontally on the canvas
       const canvasCenterX = canvasWidth / 2
 
+      // Calculate adaptive sample interval to ensure smooth curves
+      const adaptiveSampleInterval = wavelength / SAMPLES_PER_WAVELENGTH
+
       // Draw the wave by sampling parameter t
       ctx.beginPath()
       ctx.strokeStyle = isDarkMode ? '#ffffff' : '#000000'
@@ -156,7 +193,7 @@ const Wave = ({ height, wavelength, speed, cycles, isDarkMode, thickness }: Wave
       let isFirstPoint = true
 
       // Sample points from phase to phase + totalParameterLength
-      for (let parameterT = phase; parameterT <= phase + totalParameterLength; parameterT += WAVE_SAMPLE_INTERVAL) {
+      for (let parameterT = phase; parameterT <= phase + totalParameterLength; parameterT += adaptiveSampleInterval) {
         // Get parametric positions (uses modulo internally for repeating pattern)
         const waveXInCycle = getWaveX(parameterT)
         const waveY = getWaveY(parameterT)
@@ -187,25 +224,21 @@ const Wave = ({ height, wavelength, speed, cycles, isDarkMode, thickness }: Wave
       const { wavelength, speed } = paramsRef.current
 
       // Calculate delta time in seconds
-      // On first frame, initialize lastTimeRef
       if (lastTimeRef.current === 0) {
         lastTimeRef.current = timestamp
       }
-      const deltaTime = (timestamp - lastTimeRef.current) / 1000 // Convert to seconds
+      const deltaTime = (timestamp - lastTimeRef.current) / 1000
       lastTimeRef.current = timestamp
 
       // Update normalized phase (wavelength-independent)
-      // Speed is now properly time-based: deltaTime ensures consistent motion regardless of refresh rate
-      // speed / SPEED_SCALE_FACTOR represents units per second
-      normalizedPhaseRef.current += (speed / SPEED_SCALE_FACTOR) * deltaTime * 60 // Multiply by 60 to maintain same speed as before at 60fps
+      // deltaTime ensures consistent motion regardless of refresh rate
+      // Multiply by FPS_NORMALIZATION to maintain consistent speed calibrated to 60fps
+      normalizedPhaseRef.current += (speed / SPEED_SCALE_FACTOR) * deltaTime * FPS_NORMALIZATION
 
       // Convert normalized phase to actual phase by multiplying with current wavelength
       const actualPhase = normalizedPhaseRef.current * wavelength
 
-      // Draw the wave with the actual phase
       drawWave(actualPhase)
-
-      // Request next frame
       animationFrameRef.current = requestAnimationFrame(animate)
     }
 

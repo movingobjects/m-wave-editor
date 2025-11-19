@@ -26,7 +26,8 @@ function createWindow() {
     height: 600,
     x: !app.isPackaged ? 75 : undefined,
     y: !app.isPackaged ? 40 : undefined,
-    frame: false,
+    titleBarStyle: 'hiddenInset',
+    trafficLightPosition: { x: 10, y: 10 },
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
@@ -50,9 +51,9 @@ function createWindow() {
 }
 
 app.on('window-all-closed', () => {
+  win = null
   if (process.platform !== 'darwin') {
     app.quit()
-    win = null
   }
 })
 

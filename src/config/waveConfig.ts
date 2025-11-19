@@ -30,8 +30,6 @@ export const DEFAULT_SETTINGS = {
 export const WAVE_CONSTRAINTS = {
   // Wavelength must be at least 2x thickness
   minWavelengthToThicknessRatio: 2,
-  // Height must be at least half the thickness (to avoid negative effective height)
-  minHeightToThicknessRatio: 0.5,
-  // Height must be at least 2/3 of wavelength (to ensure proper wave proportions)
-  minHeightToWavelengthRatio: 2 / 3,
+  // Height must be at least (wavelength + thickness) / 2
+  minHeightCalculation: (wavelength: number, thickness: number) => (wavelength + thickness) / 2,
 } as const
