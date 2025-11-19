@@ -193,6 +193,7 @@ const Wave = ({ height, wavelength, speed, cycles, isDarkMode, thickness }: Wave
       let isFirstPoint = true
 
       // Sample points from phase to phase + totalParameterLength
+      // We render beyond the visible canvas bounds to ensure smooth appearance at edges
       for (let parameterT = phase; parameterT <= phase + totalParameterLength; parameterT += adaptiveSampleInterval) {
         // Get parametric positions (uses modulo internally for repeating pattern)
         const waveXInCycle = getWaveX(parameterT)
@@ -206,14 +207,12 @@ const Wave = ({ height, wavelength, speed, cycles, isDarkMode, thickness }: Wave
         const canvasX = canvasCenterX + absoluteWaveX - phase - totalParameterLength / 2
         const canvasY = waveY
 
-        // Only draw if within canvas bounds
-        if (canvasX >= 0 && canvasX <= canvasWidth) {
-          if (isFirstPoint) {
-            ctx.moveTo(canvasX, canvasY)
-            isFirstPoint = false
-          } else {
-            ctx.lineTo(canvasX, canvasY)
-          }
+        // Draw all points - canvas will naturally clip anything outside bounds
+        if (isFirstPoint) {
+          ctx.moveTo(canvasX, canvasY)
+          isFirstPoint = false
+        } else {
+          ctx.lineTo(canvasX, canvasY)
         }
       }
 

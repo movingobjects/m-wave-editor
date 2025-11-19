@@ -18,6 +18,11 @@ const Controls = ({ settings, onUpdateSettings, onSetDarkMode, onReset }: Contro
     settings.thickness * WAVE_CONSTRAINTS.minWavelengthToThicknessRatio
   )
 
+  const minHeight = Math.max(
+    WAVE_BOUNDS.height.min,
+    WAVE_CONSTRAINTS.minHeightCalculation(settings.wavelength, settings.thickness)
+  )
+
   return (
     <div className="controls">
       <h2>m wave</h2>
@@ -27,7 +32,7 @@ const Controls = ({ settings, onUpdateSettings, onSetDarkMode, onReset }: Contro
         label="Height"
         value={settings.height}
         onChange={(height) => onUpdateSettings({ height })}
-        min={WAVE_BOUNDS.height.min}
+        min={minHeight}
         max={WAVE_BOUNDS.height.max}
         step={WAVE_BOUNDS.height.step}
       />
