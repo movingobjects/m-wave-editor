@@ -14,6 +14,7 @@ const Wave = ({ height, wavelength, speed, cycles, isDarkMode, thickness }: Wave
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const normalizedPhaseRef = useRef(0) // Phase as a fraction of wavelength (wavelength-independent)
   const animationFrameRef = useRef<number>()
+  const lastTimeRef = useRef<number>(0) // Track last frame timestamp for delta time calculation
 
   // Store wave parameters in refs so animation loop can access current values without restarting
   const paramsRef = useRef({ height, wavelength, speed, cycles, isDarkMode, thickness })
@@ -182,12 +183,21 @@ const Wave = ({ height, wavelength, speed, cycles, isDarkMode, thickness }: Wave
       ctx.stroke()
     }
 
-    const animate = () => {
+    const animate = (timestamp: number) => {
       const { wavelength, speed } = paramsRef.current
 
+      // Calculate delta time in seconds
+      // On first frame, initialize lastTimeRef
+      if (lastTimeRef.current === 0) {
+        lastTimeRef.current = timestamp
+      }
+      const deltaTime = (timestamp - lastTimeRef.current) / 1000 // Convert to seconds
+      lastTimeRef.current = timestamp
+
       // Update normalized phase (wavelength-independent)
-      // Increment represents fraction of a wavelength to advance
-      normalizedPhaseRef.current += speed / SPEED_SCALE_FACTOR
+      // Speed is now properly time-based: deltaTime ensures consistent motion regardless of refresh rate
+      // speed / SPEED_SCALE_FACTOR represents units per second
+      normalizedPhaseRef.current += (speed / SPEED_SCALE_FACTOR) * deltaTime * 60 // Multiply by 60 to maintain same speed as before at 60fps
 
       // Convert normalized phase to actual phase by multiplying with current wavelength
       const actualPhase = normalizedPhaseRef.current * wavelength
@@ -200,7 +210,9 @@ const Wave = ({ height, wavelength, speed, cycles, isDarkMode, thickness }: Wave
     }
 
     // Start animation
-    animate()
+    // Reset lastTimeRef to ensure proper delta time calculation on first frame
+    lastTimeRef.current = 0
+    animationFrameRef.current = requestAnimationFrame(animate)
 
     return () => {
       if (animationFrameRef.current) {

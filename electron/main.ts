@@ -22,8 +22,8 @@ let win: BrowserWindow | null
 
 function createWindow() {
   win = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 1000,
+    height: 600,
     x: !app.isPackaged ? 75 : undefined,
     y: !app.isPackaged ? 40 : undefined,
     frame: false,
